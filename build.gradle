@@ -27,6 +27,8 @@ ext {
 }
 
 dependencies {
+	implementation platform('software.amazon.awssdk:bom:2.15.15')
+	implementation 'software.amazon.awssdk:s3'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -48,6 +50,8 @@ sonarqube {
         property "sonar.login", "admin"
 		property "sonar.password", "commonsense"
 		property "sonar.scm.provider", "git"
+		property 'sonar.host.url', 'http://localhost:9000'
+		property "sonar.coverage.jacoco.xmlReportPaths","${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
 	}
 }
 jacoco {
@@ -61,9 +65,9 @@ test {
 
 jacocoTestReport {
 	reports {
-		xml.enabled false
-		csv.enabled false
-		html.destination file("${buildDir}/jacocoHtml")
+		xml.enabled true
+		xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
 	}
 	dependsOn test
 }
+test.finalizedBy jacocoTestReport
