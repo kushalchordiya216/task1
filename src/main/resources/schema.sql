@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS metadata (
+    id INT NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    filetype VARCHAR(255) DEFAULT NULL,
+    obj_key VARCHAR(255) NOT NULL UNIQUE,
+    size BIGINT DEFAULT NULL,
+    PRIMARY KEY (id)
+);
