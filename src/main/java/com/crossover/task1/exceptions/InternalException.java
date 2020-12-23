@@ -1,8 +1,8 @@
 package com.crossover.task1.exceptions;
 
-public class ServerSideException extends Exception{
+public class InternalException extends Exception{
     private final String message;
-    public ServerSideException(String message){
+    public InternalException(String message){
         this.message = message;
     }
 

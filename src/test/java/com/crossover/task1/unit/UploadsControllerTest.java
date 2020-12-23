@@ -1,9 +1,7 @@
-package com.crossover.task1;
+package com.crossover.task1.unit;
 
-import com.crossover.task1.interfaces.MediaHandlerService;
-import com.crossover.task1.interfaces.StorageService;
+import com.crossover.task1.services.UploadsService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 
 
 @SpringBootTest
@@ -26,13 +23,11 @@ class UploadsControllerTest {
     private MockMvc mvc;
 
     @MockBean
-    private MediaHandlerService mediaHandlerService;
-    @MockBean
-    private StorageService storageService;
+    private UploadsService uploadsService;
 
     @Test
     void shouldFailWhenFileMissing() throws Exception {
-        this.mvc.perform(multipart("/images").param("description","empty"))
+        this.mvc.perform(multipart("/api/images").param("description","empty"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().string(containsString("Required request part 'file' is not present")));
     }
@@ -41,21 +36,19 @@ class UploadsControllerTest {
     void shouldFailWhenDescriptionMissing() throws Exception {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "earth.jpg",
                 "image/jpg", "Spring Framework".getBytes());
-        this.mvc.perform(multipart("/images").file(multipartFile))
+        this.mvc.perform(multipart("/api/images").file(multipartFile))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().string(containsString("Required String parameter 'description' is not present")));
     }
 
     @Test
-    void shouldFailWhenDescriptionIsEmpty() throws Exception {
-        MockMultipartFile multipartFile = new MockMultipartFile("file", "resources/assets/Images/earth.jpg",
+    void shouldFailWhenDescriptionEmpty() throws Exception {
+        MockMultipartFile multipartFile = new MockMultipartFile("file", "earth.jpg",
                 "image/jpg", "Spring Framework".getBytes());
-
-        given(this.mediaHandlerService.validate(multipartFile)).willReturn(true);
-        this.mvc.perform(multipart("/images").file(multipartFile)
-                .param("description",""))
+        this.mvc.perform(multipart("/api/images").file(multipartFile).param("description",""))
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().string(containsString("Description field is missing")));
+                .andExpect(content().string(containsString("Description field is empty")));
+
     }
 
     @Test
@@ -63,12 +56,11 @@ class UploadsControllerTest {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "resources/assets/Images/earth.jpg",
                 "image/jpg", "Spring Framework".getBytes());
 
-        given(this.mediaHandlerService.validate(multipartFile)).willReturn(true);
-        this.mvc.perform(multipart("/images").file(multipartFile)
+        given(this.uploadsService.upload(multipartFile, "description")).willReturn(true);
+        this.mvc.perform(multipart("/api/images").file(multipartFile)
                 .param("description","some image"))
                 .andExpect(status().isCreated())
                 .andExpect(content().string(containsString("File successfully uploaded!")));
-        then(this.storageService).should().store(multipartFile, multipartFile.getName());
     }
 
 

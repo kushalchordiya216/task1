@@ -1,33 +1,30 @@
 package com.crossover.task1.services;
 
-import com.crossover.task1.exceptions.ServerSideException;
-import com.crossover.task1.interfaces.StorageService;
+import com.crossover.task1.exceptions.InternalException;
+import com.crossover.task1.interfaces.IStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.UUID;
 
 @Service
-public class AWSStorageService implements StorageService {
+public class AWSStorageService implements IStorageService {
     @Autowired
     private S3Client s3Client;
     @Value("${aws.bucketName}")
     private String bucketName;
 
     @Override
-    public ArrayList<String> store(MultipartFile file, String contentType) throws ServerSideException {
+    public String store(MultipartFile file, String contentType) throws InternalException {
         String suffix = "";
         if(contentType == null || contentType.equals("image/jpeg")){
             suffix = ".jpg";
@@ -39,12 +36,20 @@ public class AWSStorageService implements StorageService {
         try{
             PutObjectRequest objectRequest = PutObjectRequest.builder()
                     .bucket(bucketName).key(objKey).build();
-            PutObjectResponse response = s3Client
-                    .putObject(objectRequest, RequestBody.fromByteBuffer(ByteBuffer.wrap(file.getBytes())));
-            return new ArrayList<>(Arrays.asList(objKey, bucketName, response.eTag()));
-        } catch (SdkException | IOException ex){
-            throw new ServerSideException("Server Error during storing file! Upload unsuccessful");
+            s3Client.putObject(objectRequest, RequestBody.fromByteBuffer(ByteBuffer.wrap(file.getBytes())));
+            return objKey;
+        } catch (RuntimeException | IOException ex){
+            throw new InternalException("Server Error during storing file! Upload unsuccessful");
         }
+    }
+
+    @Override
+    public void delete(String objKey) {
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(objKey)
+                .build();
+        this.s3Client.deleteObject(deleteObjectRequest);
     }
 
 }
