@@ -49,6 +49,16 @@ class ImageValidatorServiceTest {
     }
 
     @Test
+    void shouldFailWhenFileFormatIsNull() throws IOException {
+        MultipartFile multipartFile = new MockMultipartFile("image.ico","earth.ico",null,
+                new FileInputStream("src/main/resources/assets/Images/earth.ico"));
+        assertThatThrownBy(()->
+                imageHandlerService.validate(multipartFile)
+        ).isInstanceOf(ValidationException.class)
+                .hasMessage("File must be either JPG or PNG Image, other formats are not accepted!");
+    }
+
+    @Test
     void shouldPassWhenConstraintsAreSatisfied() throws IOException, ValidationException {
         MultipartFile multipartFile = new MockMultipartFile("image.png","earth.png","image/png",
                 new FileInputStream("src/main/resources/assets/Images/earth.png"));

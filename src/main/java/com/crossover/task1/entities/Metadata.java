@@ -1,10 +1,8 @@
 package com.crossover.task1.entities;
 
-import lombok.Data;
 import javax.persistence.*;
 
 @Entity
-@Data
 public class Metadata {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -19,7 +19,7 @@ public class UploadsController {
 
     @PostMapping("/api/images")
     public ResponseEntity<String> handleFileUpload (
-            @RequestParam("file")MultipartFile file,
+            @RequestParam("file") MultipartFile file,
             @RequestParam("description") String description
     ) throws ValidationException, InternalException
     {

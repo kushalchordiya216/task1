@@ -35,7 +35,7 @@ class UploadsControllerTest {
     @Test
     void shouldFailWhenDescriptionMissing() throws Exception {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "earth.jpg",
-                "image/jpg", "Spring Framework".getBytes());
+                "image/jpg", "String".getBytes());
         this.mvc.perform(multipart("/api/images").file(multipartFile))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().string(containsString("Required String parameter 'description' is not present")));
@@ -44,7 +44,7 @@ class UploadsControllerTest {
     @Test
     void shouldFailWhenDescriptionEmpty() throws Exception {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "earth.jpg",
-                "image/jpg", "Spring Framework".getBytes());
+                "image/jpeg", "String".getBytes());
         this.mvc.perform(multipart("/api/images").file(multipartFile).param("description",""))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().string(containsString("Description field is empty")));
@@ -54,7 +54,7 @@ class UploadsControllerTest {
     @Test
     void shouldPassWhenBothFieldsPresent() throws Exception {
         MockMultipartFile multipartFile = new MockMultipartFile("file", "resources/assets/Images/earth.jpg",
-                "image/jpg", "Spring Framework".getBytes());
+                "image/jpeg", "String".getBytes());
 
         given(this.uploadsService.upload(multipartFile, "description")).willReturn(true);
         this.mvc.perform(multipart("/api/images").file(multipartFile)

@@ -31,17 +31,17 @@ class AWSStorageServiceTest {
     @Test
     void TestSuccessfulUpload() throws InternalException {
         MockMultipartFile file = new MockMultipartFile("file", "src/resources/assets/Images/earth.jpg",
-                "image/jpg", "Spring Framework".getBytes());
+                "image/png", "Spring Framework".getBytes());
 
         when(this.s3Client.putObject(any(PutObjectRequest.class),any(RequestBody.class)))
                 .thenReturn(null);
-        assertThat(storageService.store(file,"image/jpeg")).isExactlyInstanceOf(String.class);
+        assertThat(storageService.store(file,"image/png")).isExactlyInstanceOf(String.class);
     }
 
     @Test
     void TestUnsuccessfulUpload() {
         MockMultipartFile file = new MockMultipartFile("file", "src/resources/assets/Images/earth.jpg",
-                "image/jpg", "Spring Framework".getBytes());
+                "image/jpeg", "Spring Framework".getBytes());
         when(s3Client.putObject(any(PutObjectRequest.class), any(RequestBody.class)))
                 .thenThrow(new RuntimeException("error"));
         assertThatThrownBy(() -> this.storageService.store(file,"image/jpeg"))

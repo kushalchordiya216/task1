@@ -26,16 +26,16 @@ public class AWSStorageService implements IStorageService {
     @Override
     public String store(MultipartFile file, String contentType) throws InternalException {
         String suffix = "";
-        if(contentType == null || contentType.equals("image/jpeg")){
+        if(contentType.equals("image/jpeg")){
             suffix = ".jpg";
-        }else if(contentType.equals("image/png")){
-            suffix=".png";
+        }
+        if(contentType.equals("image/png")){
+            suffix = ".png";
         }
         String objKey = UUID.randomUUID().toString() + suffix;
 
         try{
-            PutObjectRequest objectRequest = PutObjectRequest.builder()
-                    .bucket(bucketName).key(objKey).build();
+            PutObjectRequest objectRequest = PutObjectRequest.builder().bucket(bucketName).key(objKey).build();
             s3Client.putObject(objectRequest, RequestBody.fromByteBuffer(ByteBuffer.wrap(file.getBytes())));
             return objKey;
         } catch (RuntimeException | IOException ex){
@@ -44,12 +44,6 @@ public class AWSStorageService implements IStorageService {
     }
 
     @Override
-    public void delete(String objKey) {
-        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                .bucket(bucketName)
-                .key(objKey)
-                .build();
-        this.s3Client.deleteObject(deleteObjectRequest);
-    }
+    public void delete(String objKey) { this.s3Client.deleteObject(DeleteObjectRequest.builder().bucket(bucketName).key(objKey).build()); }
 
 }
