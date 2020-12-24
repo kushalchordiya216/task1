@@ -6,7 +6,7 @@ It also stores metadata regarding the image onto and RDS database.
 To run this code you must have the following requirements satisfied
 - Java (oracleJDK11 or open-jdk-11)
 - Gradle (version 6.6.1 or higher)
-- AWS IAM credentials set up on your local machine
+- AWS IAM credentials set up on your local machine (inside a .aws folder on linux for eg.)
 - SonarQube server and SonarServer
 
 # Running the Code
@@ -28,7 +28,20 @@ CMD/Powershell (On windows)
     set SPRING_DATASOURCE_USERNAME=${YOUR DB USERNAME}
     set SPRING_DATASOURCE_PASSWORD=${YOUR DB PASSWORD}
 ```
-- if the tests complete run
+- If you do not have AWS credentials set up by default, you need to export those as environment variables as well
+
+Bash (On linux/mac) 
+```
+    export AWS_ACCESS_KEY_ID=${your access key}
+    export AWS_SECRET_ACCESS_KEY=${your secret access key}
+```
+CMD/Powershell (On windows)
+```
+    set AWS_ACCESS_KEY_ID=${your access key}
+    set AWS_SECRET_ACCESS_KEY=${your secret access key}
+```
+
+- if the tests have completed, run
 
 ```./gradlew sonarqube```
 
