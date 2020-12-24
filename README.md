@@ -1,12 +1,12 @@
 # Introduction
-This is a spring boot application for a simple image upload API that can accept a JPG?PNG image under 500KB and store it to AWS S3 bucket.
-It also stores metadata regarding the image onto and RDS database.
+This is a spring boot application for a simple image upload API that can accept a JPG/PNG image under 500KB and store it to AWS S3 bucket.
+It also stores metadata regarding the image onto an RDS database.
 
 # Requirements
 To run this code you must have the following requirements satisfied
 - Java (oracleJDK11 or open-jdk-11)
 - Gradle (version 6.6.1 or higher)
-- AWS IAM credentials set up on your local machine (inside a .aws folder on linux for eg.)
+- AWS IAM credentials set up on your local machine (inside ~/.aws folder on linux for eg.)
 - SonarQube server and SonarServer
 
 # Running the Code
@@ -14,7 +14,9 @@ Complete the following steps to run the code
 - cd into the directory and execute 
 
  ```./gradlew build```
+
 this will download all the dependencies and build the application, including tests
+
 - in the application.properties file change the value of variables aws.bucketName and spring.datasource.url to your respective storage bucket name and database endpoint
 - Set the following environment variable in your respective shells 
   
