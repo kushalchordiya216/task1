@@ -13,6 +13,11 @@ import javax.sql.DataSource;
 @EnableJpaRepositories(basePackages = "com.crossover.task1.repository")
 @PropertySource("classpath:application-test.properties")
 @EnableTransactionManagement
+/*
+* Configures a H2 in-memory database to be used by the application during testing
+* used a profile "test", any class intending to use the test database should use the
+* @activeProfiles("test") annotation
+* */
 public class TestDBConfiguration {
     @Bean
     @Profile("test")

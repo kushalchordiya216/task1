@@ -16,6 +16,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
+/**
+* Implements the IStorageService interface for storing objects on AWS S3 buckets
+* Has an S3 client as a dependency bean, injected into it, and the name of the bucket read from the properties file
+* */
 @Service
 public class AWSStorageService implements IStorageService {
     @Autowired
@@ -23,6 +27,15 @@ public class AWSStorageService implements IStorageService {
     @Value("${aws.bucketName}")
     private String bucketName;
 
+    /**
+     * Takes in a multipart file and it's content type and generates a unique objKey for the file
+     * Uploads the file to S3 using the S3Client injected bean and returns the generated objKey if operation succeds
+     * Throws internal exception otherwise
+     * @param file Multipart file, that is to be uploaded onto the S3 bucket
+     * @param contentType content type of the file, example: image/jpeg
+     * @return String objKey generated for the object
+     * @throws InternalException to indicate failure during object storage
+     */
     @Override
     public String store(MultipartFile file, String contentType) throws InternalException {
         String suffix = "";
@@ -43,6 +56,10 @@ public class AWSStorageService implements IStorageService {
         }
     }
 
+    /**
+     * Deletes a stored object from S3 bucket using the generated objKey
+     * @param objKey objKey of the object to be deleted
+     */
     @Override
     public void delete(String objKey) { this.s3Client.deleteObject(DeleteObjectRequest.builder().bucket(bucketName).key(objKey).build()); }
 

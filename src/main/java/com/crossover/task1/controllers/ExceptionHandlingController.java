@@ -10,6 +10,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import javax.servlet.ServletException;
 
 @ControllerAdvice
+/*
+* Global Exception handling controller
+* Handles any and all exceptions thrown across the application,
+* Assigns the proper statusCode to outgoing response
+* along with the exception message as response body
+* */
 public class ExceptionHandlingController {
 
     @ExceptionHandler({ValidationException.class, ServletException.class})

@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Main business service that wraps up all business logic. Consists of three smaller segregated interfaces
+ * which are all injected into the service. Validated incoming file, uploads it to storage platform if valid
+ * and stores metadata for the same in a specified data store
+ */
 @Service
 public class UploadsService {
     private final IMediaValidatorService mediaValidatorService;
@@ -22,6 +27,15 @@ public class UploadsService {
         this.metaDataService = metaDataService;
     }
 
+    /**
+     * Takes in a multipart file, and passes it through the validator, storage and metadata services respectively
+     * Manages transactional consistency between storage and metadata, rolling one back if the other fails.
+     * @param file Multipart file sent by client
+     * @param description description of the file sent by client
+     * @return true if all operation succeed
+     * @throws ValidationException if file is invalid
+     * @throws InternalException if storage or metadata operations fail
+     */
     public boolean upload(MultipartFile file, String description) throws ValidationException, InternalException {
         this.mediaValidatorService.validate(file);
         String objKey = this.storageService.store(file,file.getContentType());
