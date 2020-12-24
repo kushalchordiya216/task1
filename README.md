@@ -54,5 +54,6 @@ to get an analysis of the code on http://locahost:9000/. (This assumes you have 
 
 The application by default runs on port 8080. 
 If that port is busy,set the server.port property in application.properties to whatever port is available.
-
+On running the application, it will automatically create a metadata table with the required schema,
+but you can also use the schema.sql file in src/main/resources/schema.sql to migrate the database schema
 You can now test the application on http://localost:8080/api/images
